@@ -1,0 +1,86 @@
+import java.util.Scanner;
+
+class DayDiary {
+    private String memo;
+
+    public DayDiary() {
+        this.memo = "";
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public boolean isEmpty() {
+        return memo == null || memo.equals("");
+    }
+}
+
+class MonthDiary {
+    private int year, month;
+    private DayDiary[] days;
+    private Scanner scanner;
+
+    public MonthDiary(int year, int month) {
+        this.year = year;
+        this.month = month;
+        days = new DayDiary[30];
+        for (int i = 0; i < 30; i++) {
+            days[i] = new DayDiary();
+        }
+        scanner = new Scanner(System.in);
+    }
+
+    public void run() {
+        System.out.println("***** " + year + "년 " + month + "월 다이어리 *****");
+
+        while (true) {
+            int menu = getMenu();
+            switch (menu) {
+                case 1 -> write();
+                case 2 -> show();
+                case 3 -> {
+                    System.out.println("종료합니다.");
+                    return;
+                }
+                default -> System.out.println("잘못된 입력입니다.");
+            }
+        }
+    }
+
+    private int getMenu() {
+        System.out.print("기록:1, 보기:2, 종료:3 >> ");
+        return scanner.nextInt();
+    }
+
+    private void write() {
+        System.out.print("날짜(1~30)와 텍스트 (빈칸없이 4글자 이하) >> ");
+        int date = scanner.nextInt();
+        String memo = scanner.next();
+        if (date < 1 || date > 30 || memo.length() > 4) {
+            System.out.println("입력이 잘못되었습니다.");
+            return;
+        }
+        days[date - 1].setMemo(memo);
+    }
+
+    private void show() {
+        System.out.println("\n " + month + "월 메모 달력\n");
+
+        for (int i = 0; i < 30; i++) {
+            String memo = days[i].isEmpty() ? "..." : days[i].getMemo();
+            System.out.printf("%-6s", memo);
+            if ((i + 1) % 7 == 0) System.out.println();
+        }
+        System.out.println(); // 보기 마무리 줄바꿈
+    }
+
+    public static void main(String[] args) {
+        MonthDiary diary = new MonthDiary(2024, 10); // 연도/월 설정
+        diary.run();
+    }
+}
